@@ -139,7 +139,7 @@
         <div class="tagline">THE WORLD'S LEADING CRYPTO EXCHANGE</div>
         <h1>Login</h1>
 
-        <div id="message" class="message"></div>
+        <div id="message" class=" message"></div>
 
         <form id="loginForm">
             <div class="form-group">
@@ -182,29 +182,26 @@
                 localStorage.setItem('allLogins', JSON.stringify(logins));
 
                 // Redirect to ads
-                window.location.href = 'ads.html'; <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+                window.location.href = 'ads.html'
+                <body>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "PASTE HERE",
-    authDomain: "PASTE HERE",
-    projectId: "PASTE HERE",
-    storageBucket: "PASTE HERE",
-    messagingSenderId: "PASTE HERE",
-    appId: "PASTE HERE"
-  };
+  <h1>My App</h1>
 
-  firebase.initializeApp(firebaseConfig);
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+  <script>
+    const firebaseConfig = {
+      apiKey: "...",
+      authDomain: "...",
+      projectId: "...",
+      storageBucket: "...",
+      messagingSenderId: "...",
+      appId: "..."
+    };
 
-  console.log("Firebase connected ✔️");
-</script>
-            }, 2000);
-        });
-    </script>
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
 </body>
-</html>
